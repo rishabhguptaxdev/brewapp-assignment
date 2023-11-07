@@ -1,1 +1,1 @@
-export const DB_NAME = "brewapp";
+module.exports.DB_NAME = "brewapp";
