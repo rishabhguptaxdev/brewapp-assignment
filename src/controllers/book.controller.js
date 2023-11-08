@@ -42,8 +42,50 @@ exports.getBookById = asyncHandler(async (req, res, next) => {
       : new ApiResponse(404, null, "Book not found");
     res.status(response.statusCode).json(response);
   } catch (error) {
+    console.log(error);
     return next(
       new ApiError(500, `Failed to fetch book with id ${req.params.id}`, error)
+    );
+  }
+});
+
+exports.updateBookById = asyncHandler(async (req, res, next) => {
+  try {
+    const book = await Book.findById(req.params.id);
+    if (book) {
+      try {
+        const updatedbook = await Book.findByIdAndUpdate(
+          req.params.id,
+          { $set: req.body },
+          {
+            new: true,
+            runValidators: true,
+            useFindAndModify: false,
+          }
+        );
+        const response = new ApiResponse(200, updatedbook);
+        res.status(response.statusCode).json(response);
+      } catch (error) {
+        return next(
+          new ApiError(
+            500,
+            `Failed to update book with id ${req.params.id}`,
+            error
+          )
+        );
+      }
+    } else {
+      return next(
+        new ApiError(404, `Book with id ${req.params.id} does not exist`, error)
+      );
+    }
+  } catch (error) {
+    return next(
+      new ApiError(
+        500,
+        `Something went wrong while finding book with id ${req.params.id}`,
+        error
+      )
     );
   }
 });

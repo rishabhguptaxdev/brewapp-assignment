@@ -5,10 +5,11 @@ const {
   createBook,
   getAllBooks,
   getBookById,
+  updateBookById,
 } = require("../controllers/book.controller");
 
 router.route("/createbook").post(createBook);
 router.route("/getbooks").get(getAllBooks);
-router.route("/book/:id").get(getBookById);
+router.route("/book/:id").get(getBookById).put(updateBookById);
 
 module.exports = router;
