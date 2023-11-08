@@ -89,3 +89,36 @@ exports.updateBookById = asyncHandler(async (req, res, next) => {
     );
   }
 });
+
+exports.deleteBookById = asyncHandler(async (req, res, next) => {
+  try {
+    const book = await Book.findById(req.params.id);
+    if (book) {
+      try {
+        await book.deleteOne();
+        const response = new ApiResponse(200);
+        res.status(response.statusCode).json(response);
+      } catch (error) {
+        return next(
+          new ApiError(
+            500,
+            `Failed to delete book with id ${req.params.id}`,
+            error
+          )
+        );
+      }
+    } else {
+      return next(
+        new ApiError(404, `Book with id ${req.params.id} does not exist`, error)
+      );
+    }
+  } catch (error) {
+    return next(
+      new ApiError(
+        500,
+        `Something went wrong while finding book with id ${req.params.id}`,
+        error
+      )
+    );
+  }
+});
