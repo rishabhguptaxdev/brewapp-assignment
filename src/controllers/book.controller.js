@@ -20,7 +20,9 @@ exports.createBook = asyncHandler(async (req, res, next) => {
     const response = new ApiResponse(201, book, "Book created successfully");
     res.status(response.statusCode).json(response);
   } catch (error) {
-    return next(new ApiError(500, "Failed to create book", false, error));
+    return next(
+      new ApiError(500, "Failed to create book", null, error.message)
+    );
   }
 });
 
@@ -30,7 +32,7 @@ exports.getAllBooks = asyncHandler(async (req, res, next) => {
     const response = new ApiResponse(200, books);
     res.status(response.statusCode).json(response);
   } catch (error) {
-    return next(new ApiError(500, "Failed to fetch all books", _, error));
+    return next(new ApiError(500, "Failed to fetch all books", error));
   }
 });
 
@@ -42,7 +44,6 @@ exports.getBookById = asyncHandler(async (req, res, next) => {
       : new ApiResponse(404, null, "Book not found");
     res.status(response.statusCode).json(response);
   } catch (error) {
-    console.log(error);
     return next(
       new ApiError(500, `Failed to fetch book with id ${req.params.id}`, error)
     );
@@ -74,9 +75,11 @@ exports.updateBookById = asyncHandler(async (req, res, next) => {
           )
         );
       }
+      console.log(" book found");
     } else {
+      console.log("book not found");
       return next(
-        new ApiError(404, `Book with id ${req.params.id} does not exist`, error)
+        new ApiError(404, `Book with id ${req.params.id} does not exist`)
       );
     }
   } catch (error) {
@@ -109,7 +112,7 @@ exports.deleteBookById = asyncHandler(async (req, res, next) => {
       }
     } else {
       return next(
-        new ApiError(404, `Book with id ${req.params.id} does not exist`, error)
+        new ApiError(404, `Book with id ${req.params.id} does not exist`)
       );
     }
   } catch (error) {
