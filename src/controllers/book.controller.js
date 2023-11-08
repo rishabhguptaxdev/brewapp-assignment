@@ -3,7 +3,7 @@ const ApiResponse = require("../utils/ApiResponse");
 const ApiError = require("../utils/ApiError");
 const Book = require("../models/book.model");
 
-const createBook = asyncHandler(async (req, res, next) => {
+exports.createBook = asyncHandler(async (req, res, next) => {
   const { title, author, summary } = req.body;
 
   if (!title || !author || !summary) {
@@ -24,4 +24,12 @@ const createBook = asyncHandler(async (req, res, next) => {
   }
 });
 
-module.exports = createBook;
+exports.getAllBooks = asyncHandler(async (req, res, next) => {
+  try {
+    const books = await Book.find();
+    const response = new ApiResponse(200, books);
+    res.status(response.statusCode).json(response);
+  } catch (error) {
+    return next(new ApiError(500, "Failed to fetch all books", _, error));
+  }
+});
