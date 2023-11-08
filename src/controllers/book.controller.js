@@ -33,3 +33,17 @@ exports.getAllBooks = asyncHandler(async (req, res, next) => {
     return next(new ApiError(500, "Failed to fetch all books", _, error));
   }
 });
+
+exports.getBookById = asyncHandler(async (req, res, next) => {
+  try {
+    const book = await Book.findById(req.params.id);
+    const response = book
+      ? new ApiResponse(200, book)
+      : new ApiResponse(404, null, "Book not found");
+    res.status(response.statusCode).json(response);
+  } catch (error) {
+    return next(
+      new ApiError(500, `Failed to fetch book with id ${req.params.id}`, error)
+    );
+  }
+});
